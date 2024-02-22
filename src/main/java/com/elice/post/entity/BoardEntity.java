@@ -1,6 +1,7 @@
 package com.elice.post.entity;
 
 
+import com.elice.post.dto.BoardDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "board")
-public class BoardEntity {
+public class BoardEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,4 +29,16 @@ public class BoardEntity {
 
     @Column
     private int boardHits;
+
+    public static BoardEntity toSaveEntity(BoardDTO boardDTO){
+        BoardEntity boardEntity = new BoardEntity();
+        boardEntity.setBoardWriter(boardDTO.getBoardWriter());
+        boardEntity.setBoardPass(boardDTO.getBoardPass());
+        boardEntity.setBoardContents(boardDTO.getBoardContents());
+        boardEntity.setBoardTitle(boardDTO.getBoardTitle());
+        boardEntity.setBoardHits(0);
+        return boardEntity;
+    }
+
+
 }
