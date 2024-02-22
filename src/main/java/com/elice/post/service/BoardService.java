@@ -4,6 +4,7 @@ package com.elice.post.service;
 import com.elice.post.dto.BoardDTO;
 import com.elice.post.entity.BoardEntity;
 import com.elice.post.repository.BoardRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +50,10 @@ public class BoardService {
         return findById(boardDTO.getId());
     }
 
+    @Transactional
+    public void updateHits(Long id){
+        boardRepository.updateHits(id);
+    }
 
     public void delete(Long id){
         boardRepository.deleteById(id);

@@ -169,29 +169,29 @@
     </div>
 </div>
 
-<div class="pagination-container">
-    <!-- 첫 페이지로 이동 -->
-    <a th:href="@{/board/paging(page=1)}" class="pagination-link"><i class="fas fa-angle-double-left"></i></a>
+<!--<div class="pagination-container">-->
+<!--    &lt;!&ndash; 첫 페이지로 이동 &ndash;&gt;-->
+<!--    <a th:href="@{/board/paging(page=1)}" class="pagination-link"><i class="fas fa-angle-double-left"></i></a>-->
 
-    <!-- 이전 페이지로 이동 -->
-    <a th:href="${boardList.first} ? '#' : @{/board/paging(page=${boardList.number})}" class="pagination-link"><i class="fas fa-angle-left"></i></a>
+<!--    &lt;!&ndash; 이전 페이지로 이동 &ndash;&gt;-->
+<!--    <a th:href="${boardList.first} ? '#' : @{/board/paging(page=${boardList.number})}" class="pagination-link"><i class="fas fa-angle-left"></i></a>-->
 
-    <!-- 페이지 번호 링크 -->
-    <span th:each="page: ${#numbers.sequence(startPage, endPage)}">
-        <!-- 현재 페이지 -->
-        <span th:if="${page == boardList.number + 1}" class="pagination-link current-page" th:text="${page}"></span>
-        <!-- 다른 페이지 번호 -->
-        <span th:unless="${page == boardList.number + 1}">
-            <a th:href="@{/board/paging(page=${page})}" class="pagination-link" th:text="${page}"></a>
-        </span>
-    </span>
+<!--    &lt;!&ndash; 페이지 번호 링크 &ndash;&gt;-->
+<!--    <span th:each="page: ${#numbers.sequence(startPage, endPage)}">-->
+<!--        &lt;!&ndash; 현재 페이지 &ndash;&gt;-->
+<!--        <span th:if="${page == boardList.number + 1}" class="pagination-link current-page" th:text="${page}"></span>-->
+<!--        &lt;!&ndash; 다른 페이지 번호 &ndash;&gt;-->
+<!--        <span th:unless="${page == boardList.number + 1}">-->
+<!--            <a th:href="@{/board/paging(page=${page})}" class="pagination-link" th:text="${page}"></a>-->
+<!--        </span>-->
+<!--    </span>-->
 
-    <!-- 다음 페이지로 이동 -->
-    <a th:href="${boardList.last} ? '#' : @{/board/paging(page=${boardList.number + 2})}" class="pagination-link"><i class="fas fa-angle-right"></i></a>
+<!--    &lt;!&ndash; 다음 페이지로 이동 &ndash;&gt;-->
+<!--    <a th:href="${boardList.last} ? '#' : @{/board/paging(page=${boardList.number + 2})}" class="pagination-link"><i class="fas fa-angle-right"></i></a>-->
 
-    <!-- 마지막 페이지로 이동 -->
-    <a th:href="@{/board/paging(page=${boardList.totalPages})}" class="pagination-link"><i class="fas fa-angle-double-right"></i></a>
-</div>
+<!--    &lt;!&ndash; 마지막 페이지로 이동 &ndash;&gt;-->
+<!--    <a th:href="@{/board/paging(page=${boardList.totalPages})}" class="pagination-link"><i class="fas fa-angle-double-right"></i></a>-->
+<!--</div>-->
 
 
 

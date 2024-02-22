@@ -27,8 +27,8 @@ public class BoardController {
 
     @GetMapping("/{id}")
     public String findById(@PathVariable Long id, Model model){
-        // 조회수 증가 ++
 
+        boardService.updateHits(id); // 조회수 증가
         BoardDTO boardDTO = boardService.findById(id);
         model.addAttribute("board",boardDTO);
         return "detail";
@@ -53,5 +53,6 @@ public class BoardController {
         boardService.delete(id);
         return "redirect:/board/paging";
     }
+
 
 }
