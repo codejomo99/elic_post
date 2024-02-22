@@ -6,6 +6,10 @@ import com.elice.post.entity.BoardEntity;
 import com.elice.post.repository.BoardRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -59,6 +63,18 @@ public class BoardService {
         boardRepository.deleteById(id);
     }
 
+    // 페이징
+    public Page<BoardDTO> paging(Pageable pageable){
+        int page = pageable.getPageNumber() - 1;
+        int pageLimit = 5;
+        Page<BoardEntity> boardEntities = boardRepository.findAll(PageRequest.of(page, pageLimit,
+                Sort.by(Sort.Direction.DESC,"id")));
 
+        Page<BoardDTO> boardDTOS = boardEntities.map(board -> new BoardDTO(board.getId(), board.getBoardPass(), board.getBoardWriter(),
+                board.getBoardTitle(),board.getBoardHits(),board.getCreatedTime()));
+        return boardDTOS;
+
+
+    }
 
 }

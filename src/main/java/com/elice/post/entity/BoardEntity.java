@@ -15,13 +15,13 @@ public class BoardEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 10, nullable = false)
     private String boardWriter;
 
     @Column
     private String boardPass;
 
-    @Column
+    @Column(length = 15)
     private String boardTitle;
 
     @Column(length = 1000)
