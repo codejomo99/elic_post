@@ -2,6 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8"/>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
     <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
             rel="stylesheet"
@@ -18,6 +21,21 @@
     />
 
     <style>
+
+        .comment-list-container td {
+            /* 단어 단위로 줄바꿈 */
+            word-wrap: break-word;
+        }
+        #commentWriter {
+            width: 15%; /* 입력 필드의 가로 길이를 50%로 지정 */
+        }
+        #commentContents{
+            width: 30%;
+        }
+        label{
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
         html,
         body {
             font-family: "Elice DX Neolli", sans-serif;
@@ -91,11 +109,48 @@
             <small
                     class="text-secondary"
                     id="commentsCount"
-            >0</small
+                    th:text="${#lists.size(commentList)}"
+            ></small
             >
         </h4>
+
+        <div id="comment-write" class="comment-form-container">
+
+            <div class="form-group">
+                <label for="commentWriter"> 작성자</label>
+                <input type="text" id="commentWriter" class="form-control" placeholder="(최대10글자)" maxlength="10">
+            </div>
+            <div class="form-group">
+                <label for="commentContents"> 내용</label>
+                <textarea id="commentContents" class="form-control" placeholder="내용"></textarea>
+            </div>
+            <button id="comment-writer-btn" class="btn btn-primary" onclick="commentWrite()" style="margin-top: 15px">입력</button>
+        </div>
+        <!-- 댓글 출력 부분-->
+
+        <div id="comment-list" class="comment-list-container">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">작성자</th>
+                    <th scope="col">내용</th>
+                    <th scope="col">작성시간</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="comment: ${commentList}">
+                    <td th:text="${comment.commentWriter}"></td>
+                    <td th:text="${comment.commentContents}"></td>
+                    <td th:text="${#temporals.format(comment.commentCreatedTime, 'yyyy-MM-dd')}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>
+
+
 
 <!-- 부트스트랩 JS 추가 -->
 <script
@@ -104,6 +159,58 @@
         crossorigin="anonymous"
 ></script>
 <script>
+
+    const commentWrite = () => {
+        const writer = document.getElementById("commentWriter").value;
+        const contents = document.getElementById("commentContents").value;
+        console.log("작성자: ", writer);
+        console.log("내용: ", contents);
+
+        // 댓글 내용이 비어 있는지 확인
+        if (!contents.trim()) {
+            alert("댓글 내용을 입력해주세요.");
+            return; // 댓글 내용이 비어 있으면 제출을 중단
+        }
+
+        const id = [[${board.id}]];
+
+        $.ajax({
+            type: "post",
+            url: "/comment/save",
+            data: {
+                "commentWriter": writer,
+                "commentContents": contents,
+                "boardId": id
+            },
+            success: function (res) {
+                console.log("요청성공", res);
+                let output = "<table class='table'>"; // 테이블 클래스 추가
+                output += "<thead><tr><th scope='col'>작성자</th><th scope='col'>내용</th><th scope='col'>작성시간</th></tr></thead>";
+                output += "<tbody>";
+                for (let i in res) {
+                    output += "<tr>";
+                    output += "<td>" + res[i].commentWriter + "</td>";
+                    output += "<td>" + res[i].commentContents + "</td>";
+                    output += "<td>" + moment(res[i].commentCreatedTime).format('YYYY-MM-DD') + "</td>";
+                    output += "</tr>";
+                }
+                output += "</tbody>";
+                output += "</table>";
+                $('#comment-list').html(output);
+                $('#commentWriter').val('');
+                $('#commentContents').val('');
+                $('#commentsCount').text(res.length);
+            },
+            error: function (err) {
+                console.log("요청실패", err);
+            }
+        });
+
+
+
+    }
+
+
     const listReq = () => {
         location.href = "/board/paging";
     }

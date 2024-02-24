@@ -1,7 +1,9 @@
 package com.elice.post.controller;
 
 import com.elice.post.dto.BoardDTO;
+import com.elice.post.dto.CommentDTO;
 import com.elice.post.service.BoardService;
+import com.elice.post.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,12 +12,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/board")
 public class BoardController {
 
     private final BoardService boardService;
+    private final CommentService commentService;
 
     @GetMapping("/save")
     public String saveForm(){
@@ -33,6 +38,9 @@ public class BoardController {
 
         boardService.updateHits(id); // 조회수 증가
         BoardDTO boardDTO = boardService.findById(id);
+
+        List<CommentDTO> commentDTOList = commentService.findAll(id);
+        model.addAttribute("commentList",commentDTOList);
         model.addAttribute("board",boardDTO);
         return "detail";
     }
