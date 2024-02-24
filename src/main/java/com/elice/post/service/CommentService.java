@@ -31,5 +31,16 @@ public class CommentService {
 
     }
 
+    public void delete(Long id){
+        commentRepository.deleteById(id);
+    }
+
+    public void update(CommentDTO commentDTO){
+        CommentEntity commentEntity =  CommentEntity.toUpdateEntity(commentDTO);
+        commentRepository.save(commentEntity);
+
+    }
+
+
 
 }
