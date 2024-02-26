@@ -70,7 +70,7 @@
 </head>
 <body>
 <div class="container my-5 mx-auto">
-    <button class="btn btn-primary" onclick="listReq()"
+    <button class="btn btn-success" onclick="listReq()"
     >&larr; 게시판으로 돌아가기
     </button
     >
@@ -96,22 +96,22 @@
         <hr class="mt-4"/>
 
         <div class="mb-3">
-            <strong><label for="content" style="
-    padding-bottom: 10px;padding-left: 12px;">게시글 내용</label></strong><br>
-            <tr th:if="${board.fileAttached == 1}">
-                <td th:each="fileName: ${board.storedFileName}"><img th:src="@{|/upload/${fileName}|}" alt=""
-                                                                     class="image-preview"></td>
+        <label for="content" class="form-label"><strong>게시글 내용</strong></label><br>
+
+        <!-- 파일 첨부된 경우 이미지 표시 -->
+        <table th:if="${board.fileAttached == 1}">
+            <tr>
+                <td th:each="fileName: ${board.storedFileName}">
+                    <img th:src="@{|/upload/${fileName}|}" alt="" class="image-preview">
+                </td>
             </tr>
-            <textarea
-                    class="form-control"
-                    id="content"
-                    name="boardContents"
-                    th:text="${board.boardContents}"
-                    cols="30" rows="10"
-                    readonly
-            ></textarea>
-        </div>
-        <hr class="mt-4"/>
+        </table>
+        <br>
+        <!-- 게시글 내용 텍스트 영역 -->
+        <textarea class="form-control" id="content" name="boardContents" cols="30" rows="10" readonly th:text="${board.boardContents}"></textarea>
+    </div>
+
+    <hr class="mt-4"/>
         <h4 class="mb-3">
             댓글
             <small
@@ -132,7 +132,7 @@
                 <label for="commentContents"> 내용</label>
                 <textarea id="commentContents" class="form-control" placeholder="내용"></textarea>
             </div>
-            <button id="comment-writer-btn" class="btn btn-primary" onclick="commentWrite()" style="margin-top: 15px">입력</button>
+            <button id="comment-writer-btn" class="btn btn-success" onclick="commentWrite()" style="margin-top: 15px">입력</button>
         </div>
         <!-- 댓글 출력 부분-->
 

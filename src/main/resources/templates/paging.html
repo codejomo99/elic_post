@@ -26,19 +26,20 @@
             transition: background-color 0.3s ease;
         }
 
+
         .pagination-link:hover {
             background-color: #f2f2f2;
-            color: #007bff;
+            color: #198754;
         }
 
         .current-page {
-            background-color: #007bff;
+            background-color: #198754;
             color: #fff;
-            border: 1px solid #007bff;
+            border: 1px solid #198754;
         }
 
         .current-page:hover {
-            background-color: #0056b3;
+            background-color: #157347;
         }
 
         .pagination-link,
@@ -65,13 +66,13 @@
 
 
         .current-page {
-            background-color: #007bff;
+            background-color: #198754;
             color: #fff;
-            border: 1px solid #007bff;
+            border: 1px solid #198754;
         }
 
         .current-page:hover {
-            background-color: #0056b3;
+            background-color: #157347;
         }
 
         html,
@@ -117,7 +118,7 @@
         <h1 class="text-center">고민 게시판 목록</h1>
     </div>
     <div class="d-flex justify-content-end mb-3">
-        <button onclick="saveReq()" class="btn btn-primary">게시글 추가</button>
+        <button onclick="saveReq()" class="btn btn-success">게시글 추가</button>
     </div>
     <div class="table-container">
         <table class="table">
@@ -134,14 +135,14 @@
             <tbody>
             <tr th:each="board : ${boardList}">
 
-                <td><a th:href="@{'/board/' + ${board.id}}" th:text="${board.boardTitle}"></a></td>
+                <td th:text="${board.boardTitle}"></td>
                 <td th:text="${board.boardWriter}"></td>
                 <td><span th:text="${#temporals.format(board.boardCreatedTime, 'yyyy-MM-dd HH:mm:ss')}"></span></td>
                 <td th:text="${board.boardHits}"></td>
                 <td>
                     <button class="btn btn-outline-primary" th:onclick="'updateReq(\'' + ${board.id} + '\');'">수정</button>
+                    <button class="btn btn-outline-success" th:onclick="'detailReq(\'' + ${board.id} + '\');'">보기</button>
                     <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" th:attr="onclick='setBoardIdAndPassword(\'' + ${board.id} + '\', \'' + ${board.boardPass} + '\')'">삭제</button>
-
                 </td>
 
             </tr>
@@ -202,6 +203,10 @@
 
     const saveReq = () => {
         location.href = "/board/save";
+    }
+
+    const detailReq = (id) =>{
+        location.href = "/board/" + id;
     }
 
     const updateReq = (id) => {
