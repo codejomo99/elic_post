@@ -33,35 +33,18 @@ public class BoardEntity extends BaseEntity {
     @Column
     private int boardHits;
 
-    //    public static BoardEntity toSaveEntity(BoardDTO boardDTO){
-//        BoardEntity boardEntity = new BoardEntity();
-//        boardEntity.setBoardWriter(boardDTO.getBoardWriter());
-//        boardEntity.setBoardPass(boardDTO.getBoardPass());
-//        boardEntity.setBoardContents(boardDTO.getBoardContents());
-//        boardEntity.setBoardTitle(boardDTO.getBoardTitle());
-//        boardEntity.setBoardHits(0);
-//        return boardEntity;
-//    }
-//
-//
-//    public static BoardEntity toUpdateEntity(BoardDTO boardDTO){
-//        BoardEntity boardEntity = new BoardEntity();
-//        boardEntity.setId(boardDTO.getId());
-//        boardEntity.setBoardWriter(boardDTO.getBoardWriter());
-//        boardEntity.setBoardPass(boardDTO.getBoardPass());
-//        boardEntity.setBoardContents(boardDTO.getBoardContents());
-//        boardEntity.setBoardTitle(boardDTO.getBoardTitle());
-//        boardEntity.setBoardHits(boardDTO.getBoardHits());
-//        return boardEntity;
-//    }
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<CommentEntity> commentEntityList = new ArrayList<>();
 
-// 생성자를 통해 객체 생성
-    public BoardEntity(BoardDTO boardDTO) {
-        this.boardWriter = boardDTO.getBoardWriter();
-        this.boardPass = boardDTO.getBoardPass();
-        this.boardContents = boardDTO.getBoardContents();
-        this.boardTitle = boardDTO.getBoardTitle();
-        this.boardHits = 0; // 기본값 설정
+
+    public static BoardEntity toSaveEntity(BoardDTO boardDTO){
+        BoardEntity boardEntity = new BoardEntity();
+        boardEntity.setBoardWriter(boardDTO.getBoardWriter());
+        boardEntity.setBoardPass(boardDTO.getBoardPass());
+        boardEntity.setBoardContents(boardDTO.getBoardContents());
+        boardEntity.setBoardTitle(boardDTO.getBoardTitle());
+        boardEntity.setBoardHits(0);
+        return boardEntity;
     }
 
     // 기본 생성자 (JPA 요구)
