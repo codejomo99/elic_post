@@ -3,6 +3,7 @@ package com.elice.post.service;
 
 import com.elice.post.dto.BoardDTO;
 import com.elice.post.entity.BoardEntity;
+import com.elice.post.repository.BoardFileRepository;
 import com.elice.post.repository.BoardRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BoardService {
     private final BoardRepository boardRepository;
-
+    private final BoardFileRepository boardFileRepository;
     public void save(BoardDTO boardDTO) {
 
 
@@ -28,16 +29,9 @@ public class BoardService {
         boardRepository.save(boardEntity);
     }
 
-    public List<BoardDTO> findAll() {
-        List<BoardEntity> boardEntityList = boardRepository.findAll();
-        List<BoardDTO> boardDTOList = new ArrayList<>();
 
-        for (BoardEntity boardEntity : boardEntityList) {
-            boardDTOList.add(BoardDTO.toBoardDTO(boardEntity));
-        }
-        return boardDTOList;
-    }
 
+    @Transactional
     public BoardDTO findById(Long id) {
         return boardRepository.findById(id)
                 .map(BoardDTO::toBoardDTO)
