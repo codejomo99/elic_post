@@ -36,15 +36,10 @@ public class BoardService {
         return boardDTOList;
     }
 
-    public BoardDTO findById(Long id){
-        Optional<BoardEntity> optionalBoardEntity = boardRepository.findById(id);
-        if(optionalBoardEntity.isPresent()){
-            BoardEntity boardEntity = optionalBoardEntity.get();
-            BoardDTO boardDTO = BoardDTO.toBoardDTO(boardEntity);
-            return boardDTO;
-        }else{
-            return null;
-        }
+    public BoardDTO findById(Long id) {
+        return boardRepository.findById(id)
+                .map(BoardDTO::toBoardDTO)
+                .orElse(null);
     }
 
     public BoardDTO update(BoardDTO boardDTO){
