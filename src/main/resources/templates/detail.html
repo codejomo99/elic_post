@@ -21,6 +21,10 @@
     />
 
     <style>
+        .image-preview {
+            max-width: 55%;
+            max-height: 55%;
+        }
 
         .comment-list-container td {
             /* 단어 단위로 줄바꿈 */
@@ -94,6 +98,10 @@
         <div class="mb-3">
             <strong><label for="content" style="
     padding-bottom: 10px;padding-left: 12px;">게시글 내용</label></strong>
+            <tr th:if="${board.fileAttached == 1}">
+                <td th:each="fileName: ${board.storedFileName}"><img th:src="@{|/upload/${fileName}|}" alt=""
+                                                                     class="image-preview"></td>
+            </tr>
             <textarea
                     class="form-control"
                     id="content"

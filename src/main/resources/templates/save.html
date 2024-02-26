@@ -35,7 +35,7 @@
     <div class="header mb-5">
         <h1 class="text-center">게시글 추가</h1>
     </div>
-    <form action="/board/save" method="post">
+    <form action="/board/save" method="post" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="title">닉네임</label>
             <input
@@ -95,6 +95,7 @@
                 onclick="window.history.back();"
         >
             취소
+            file: <input type="file" name="boardFile" multiple> <br>
         </button>
     </form>
 </div>
