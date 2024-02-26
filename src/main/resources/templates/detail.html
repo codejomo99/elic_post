@@ -97,7 +97,7 @@
 
         <div class="mb-3">
             <strong><label for="content" style="
-    padding-bottom: 10px;padding-left: 12px;">게시글 내용</label></strong>
+    padding-bottom: 10px;padding-left: 12px;">게시글 내용</label></strong><br>
             <tr th:if="${board.fileAttached == 1}">
                 <td th:each="fileName: ${board.storedFileName}"><img th:src="@{|/upload/${fileName}|}" alt=""
                                                                      class="image-preview"></td>
