@@ -24,7 +24,7 @@ public class BoardService {
     public void save(BoardDTO boardDTO) {
 
 
-        BoardEntity boardEntity = new BoardEntity(boardDTO);
+        BoardEntity boardEntity = BoardEntity.toSaveEntity(boardDTO);
         boardRepository.save(boardEntity);
     }
 
@@ -45,15 +45,10 @@ public class BoardService {
     }
 
     public BoardDTO update(BoardDTO boardDTO) {
-        Optional<BoardEntity> optionalBoardEntity = boardRepository.findById(boardDTO.getId());
-        if (optionalBoardEntity.isPresent()) {
-            BoardEntity boardEntity = optionalBoardEntity.get();
-            boardEntity.update(boardDTO);
-            boardRepository.save(boardEntity);
-            return BoardDTO.toBoardDTO(boardEntity);
-        } else {
-            return null;
-        }
+        BoardEntity boardEntity = BoardEntity.toUpdateEntity(boardDTO);
+        boardRepository.save(boardEntity);
+
+        return findById(boardDTO.getId());
     }
 
 

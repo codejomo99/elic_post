@@ -47,20 +47,16 @@ public class BoardEntity extends BaseEntity {
         return boardEntity;
     }
 
-    // 기본 생성자 (JPA 요구)
-    protected BoardEntity() {
+    public static BoardEntity toUpdateEntity(BoardDTO boardDTO){
+        BoardEntity boardEntity = new BoardEntity();
+        boardEntity.setId(boardDTO.getId());
+        boardEntity.setBoardWriter(boardDTO.getBoardWriter());
+        boardEntity.setBoardPass(boardDTO.getBoardPass());
+        boardEntity.setBoardContents(boardDTO.getBoardContents());
+        boardEntity.setBoardTitle(boardDTO.getBoardTitle());
+        boardEntity.setBoardHits(boardDTO.getBoardHits());
+        return boardEntity;
     }
 
-    // 게시물 업데이트 메서드
-    public void update(BoardDTO boardDTO) {
-        this.boardWriter = boardDTO.getBoardWriter();
-        this.boardPass = boardDTO.getBoardPass();
-        this.boardContents = boardDTO.getBoardContents();
-        this.boardTitle = boardDTO.getBoardTitle();
-        this.boardHits = boardDTO.getBoardHits();
-    }
-
-    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<CommentEntity> commentEntityList = new ArrayList<>();
 
 }
