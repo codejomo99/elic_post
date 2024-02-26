@@ -29,22 +29,37 @@ public class CommentEntity extends BaseEntity{
     @JoinColumn(name="board_id")
     private BoardEntity boardEntity;
 
-    public static CommentEntity toSaveEntity(CommentDTO commentDTO, BoardEntity boardEntity){
-        CommentEntity commentEntity = new CommentEntity();
-        commentEntity.setCommentWriter(commentDTO.getCommentWriter());
-        commentEntity.setCommentContents(commentDTO.getCommentContents());
-        commentEntity.setBoardEntity(boardEntity);
-        return commentEntity;
+//    public static CommentEntity toSaveEntity(CommentDTO commentDTO, BoardEntity boardEntity){
+//        CommentEntity commentEntity = new CommentEntity();
+//        commentEntity.setCommentWriter(commentDTO.getCommentWriter());
+//        commentEntity.setCommentContents(commentDTO.getCommentContents());
+//        commentEntity.setBoardEntity(boardEntity);
+//        return commentEntity;
+//    }
+//
+//    public static CommentEntity toUpdateEntity(CommentDTO commentDTO){
+//        CommentEntity commentEntity = new CommentEntity();
+//        commentEntity.setId(commentDTO.getId());
+//        commentEntity.setCommentPass(commentDTO.getPass());
+//        commentEntity.setCommentWriter(commentDTO.getCommentWriter());
+//        commentEntity.setCommentContents(commentDTO.getCommentContents());
+//        return commentEntity;
+//    }
+
+    public CommentEntity(CommentDTO commentDTO, BoardEntity boardEntity){
+        this.commentWriter = commentDTO.getCommentWriter();
+        this.commentContents = commentDTO.getCommentContents();
+        this.boardEntity = boardEntity;
     }
 
-    public static CommentEntity toUpdateEntity(CommentDTO commentDTO){
-        CommentEntity commentEntity = new CommentEntity();
-        commentEntity.setId(commentDTO.getId());
-        commentEntity.setCommentPass(commentDTO.getPass());
-        commentEntity.setCommentWriter(commentDTO.getCommentWriter());
-        commentEntity.setCommentContents(commentDTO.getCommentContents());
-        return commentEntity;
+    protected CommentEntity(){
+
     }
 
+    public void update(CommentDTO commentDTO){
+        this.commentPass = commentDTO.getPass();
+        this.commentWriter = commentDTO.getCommentWriter();
+        this.commentContents = commentDTO.getCommentContents();
+    }
 
 }

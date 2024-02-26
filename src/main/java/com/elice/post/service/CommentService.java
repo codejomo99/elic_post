@@ -1,6 +1,7 @@
 package com.elice.post.service;
 
 
+import com.elice.post.dto.BoardDTO;
 import com.elice.post.dto.CommentDTO;
 import com.elice.post.entity.BoardEntity;
 import com.elice.post.entity.CommentEntity;
@@ -25,7 +26,8 @@ public class CommentService {
 
         if (optionalBoardEntity.isPresent()) {
             BoardEntity boardEntity = optionalBoardEntity.get();
-            CommentEntity commentEntity = CommentEntity.toSaveEntity(commentDTO, boardEntity);
+            CommentEntity commentEntity = new CommentEntity(commentDTO, boardEntity);
+//            CommentEntity commentEntity = CommentEntity.toSaveEntity(commentDTO, boardEntity);
             return commentRepository.save(commentEntity).getId();
         } else {
             return null;
@@ -52,9 +54,9 @@ public class CommentService {
         commentRepository.deleteById(id);
     }
 
-    public void update(CommentDTO commentDTO){
-        CommentEntity commentEntity =  CommentEntity.toUpdateEntity(commentDTO);
-        commentRepository.save(commentEntity);
+
+    public void update(CommentDTO commentDTO, BoardDTO boardDTO){
+
 
     }
 

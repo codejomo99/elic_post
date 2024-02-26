@@ -21,16 +21,18 @@ import java.util.Optional;
 public class BoardService {
     private final BoardRepository boardRepository;
 
-    public void save(BoardDTO boardDTO){
-        BoardEntity boardEntity = BoardEntity.toSaveEntity(boardDTO);
+    public void save(BoardDTO boardDTO) {
+
+
+        BoardEntity boardEntity = new BoardEntity(boardDTO);
         boardRepository.save(boardEntity);
     }
 
-    public List<BoardDTO> findAll(){
+    public List<BoardDTO> findAll() {
         List<BoardEntity> boardEntityList = boardRepository.findAll();
         List<BoardDTO> boardDTOList = new ArrayList<>();
 
-        for(BoardEntity boardEntity : boardEntityList){
+        for (BoardEntity boardEntity : boardEntityList) {
             boardDTOList.add(BoardDTO.toBoardDTO(boardEntity));
         }
         return boardDTOList;
@@ -42,31 +44,37 @@ public class BoardService {
                 .orElse(null);
     }
 
-    public BoardDTO update(BoardDTO boardDTO){
-        BoardEntity boardEntity = BoardEntity.toUpdateEntity(boardDTO);
-        boardRepository.save(boardEntity);
-
-        return findById(boardDTO.getId());
+    public BoardDTO update(BoardDTO boardDTO) {
+        Optional<BoardEntity> optionalBoardEntity = boardRepository.findById(boardDTO.getId());
+        if (optionalBoardEntity.isPresent()) {
+            BoardEntity boardEntity = optionalBoardEntity.get();
+            boardEntity.update(boardDTO);
+            boardRepository.save(boardEntity);
+            return BoardDTO.toBoardDTO(boardEntity);
+        } else {
+            return null;
+        }
     }
 
+
     @Transactional
-    public void updateHits(Long id){
+    public void updateHits(Long id) {
         boardRepository.updateHits(id);
     }
 
-    public void delete(Long id){
+    public void delete(Long id) {
         boardRepository.deleteById(id);
     }
 
     // 페이징
-    public Page<BoardDTO> paging(Pageable pageable){
+    public Page<BoardDTO> paging(Pageable pageable) {
         int page = pageable.getPageNumber() - 1;
         int pageLimit = 5;
         Page<BoardEntity> boardEntities = boardRepository.findAll(PageRequest.of(page, pageLimit,
-                Sort.by(Sort.Direction.DESC,"id")));
+                Sort.by(Sort.Direction.DESC, "id")));
 
         Page<BoardDTO> boardDTOS = boardEntities.map(board -> new BoardDTO(board.getId(), board.getBoardPass(), board.getBoardWriter(),
-                board.getBoardTitle(),board.getBoardHits(),board.getCreatedTime()));
+                board.getBoardTitle(), board.getBoardHits(), board.getCreatedTime()));
         return boardDTOS;
 
 
