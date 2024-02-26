@@ -63,7 +63,6 @@ public class BoardService {
     }
 
 
-
     @Transactional
     public BoardDTO findById(Long id) {
         return boardRepository.findById(id)
