@@ -109,15 +109,7 @@
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"
 ></script>
-<script>
-    function displayMaskedPassword(input) {
-        var maskedValue = '';
-        for (var i = 0; i < input.value.length; i++) {
-            maskedValue += '*';
-        }
-        input.value = maskedValue;
-    }
-</script>
+
 <script>
     function maskPassword(input) {
         var hiddenPasswordField = document.getElementById('actualPassword');

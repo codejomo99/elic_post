@@ -54,9 +54,8 @@ public class BoardController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute BoardDTO boardDTO, Model model){
-        BoardDTO board = boardService.update(boardDTO);
-        model.addAttribute("board",board);
+    public String update(@ModelAttribute BoardDTO boardDTO) throws IOException {
+        boardService.update(boardDTO);
         return "redirect:/board/paging";
     }
 

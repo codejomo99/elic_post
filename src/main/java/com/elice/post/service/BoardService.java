@@ -6,6 +6,7 @@ import com.elice.post.entity.BoardEntity;
 import com.elice.post.entity.BoardFileEntity;
 import com.elice.post.repository.BoardFileRepository;
 import com.elice.post.repository.BoardRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class BoardService {
     private final BoardRepository boardRepository;
     private final BoardFileRepository boardFileRepository;
+
     public void save(BoardDTO boardDTO) throws IOException {
         // 파일 첨부 여부에 따라 로직 분리
         if (boardDTO.getBoardFile().isEmpty()) {
@@ -47,7 +49,7 @@ public class BoardService {
             BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDTO);
             Long savedId = boardRepository.save(boardEntity).getId();
             BoardEntity board = boardRepository.findById(savedId).get();
-            for(MultipartFile boardFile: boardDTO.getBoardFile()){
+            for (MultipartFile boardFile : boardDTO.getBoardFile()) {
                 String originalFilename = boardFile.getOriginalFilename(); // 2.
                 String storedFileName = System.currentTimeMillis() + "_" + originalFilename; // 3.
                 String savePath = "/Users/codejomo99/springboot_img/" + storedFileName; // C:/springboot_img/9802398403948_내사진.jpg
@@ -55,7 +57,6 @@ public class BoardService {
                 BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(board, originalFilename, storedFileName);
                 boardFileRepository.save(boardFileEntity);
             }
-
 
         }
 
@@ -69,11 +70,42 @@ public class BoardService {
                 .orElse(null);
     }
 
-    public BoardDTO update(BoardDTO boardDTO) {
-        BoardEntity boardEntity = BoardEntity.toUpdateEntity(boardDTO);
-        boardRepository.save(boardEntity);
+    @Transactional
+    public void update(BoardDTO boardDTO) throws IOException {
+        // 기존 게시물 엔티티를 가져옵니다.
+        BoardEntity boardEntity = boardRepository.findById(boardDTO.getId()).orElseThrow(() -> new EntityNotFoundException("게시물을 찾을 수 없습니다."));
 
-        return findById(boardDTO.getId());
+        // 게시물 정보를 업데이트합니다.
+        BoardEntity updatedBoardEntity = BoardEntity.toFileUpdateEntity(boardDTO);
+        // 업데이트된 게시물 정보를 저장합니다.
+        boardRepository.save(updatedBoardEntity);
+
+        // 기존 첨부 파일을 삭제합니다.
+        List<BoardFileEntity> existingFiles = boardFileRepository.findByBoardEntity(boardEntity);
+
+        for (BoardFileEntity existingFile : existingFiles) {
+            // 파일 시스템에서 파일을 삭제합니다.
+            String filePath = "/Users/codejomo99/springboot_img/" + existingFile.getStoredFileName();
+            File file = new File(filePath);
+            if (file.exists()) {
+                file.delete();
+            }
+            // 데이터베이스에서 파일 정보를 삭제합니다.
+            boardFileRepository.delete(existingFile);
+        }
+
+        // 새로운 첨부 파일을 업로드합니다.
+        if (!boardDTO.getBoardFile().isEmpty()) {
+            for (MultipartFile boardFile : boardDTO.getBoardFile()) {
+                String originalFilename = boardFile.getOriginalFilename();
+                String storedFileName = System.currentTimeMillis() + "_" + originalFilename;
+                String savePath = "/Users/codejomo99/springboot_img/" + storedFileName;
+                boardFile.transferTo(new File(savePath));
+                // 게시물과 연결된 첨부 파일 엔티티를 생성하고 저장합니다.
+                BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(boardEntity, originalFilename, storedFileName);
+                boardFileRepository.save(boardFileEntity);
+            }
+        }
     }
 
 
@@ -109,13 +141,11 @@ public class BoardService {
         Page<BoardEntity> boardEntities = boardRepository.findByBoardTitleContaining(keyword, PageRequest.of(page, pageLimit,
                 Sort.by(Sort.Direction.DESC, "id")));
 
-        Page<BoardDTO> boardDTOS =  boardEntities.map(board -> new BoardDTO(board.getId(), board.getBoardPass(), board.getBoardWriter(),
+        Page<BoardDTO> boardDTOS = boardEntities.map(board -> new BoardDTO(board.getId(), board.getBoardPass(), board.getBoardWriter(),
                 board.getBoardTitle(), board.getBoardHits(), board.getCreatedTime()));
 
         return boardDTOS;
     }
-
-
 
 
 }

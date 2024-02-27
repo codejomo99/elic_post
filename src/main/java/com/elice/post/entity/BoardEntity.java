@@ -5,6 +5,7 @@ import com.elice.post.dto.BoardDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,18 @@ public class BoardEntity extends BaseEntity {
         boardEntity.setBoardContents(boardDTO.getBoardContents());
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
         boardEntity.setBoardHits(boardDTO.getBoardHits());
+        return boardEntity;
+    }
+
+    public static BoardEntity toFileUpdateEntity(BoardDTO boardDTO){
+        BoardEntity boardEntity = new BoardEntity();
+        boardEntity.setId(boardDTO.getId());
+        boardEntity.setBoardWriter(boardDTO.getBoardWriter());
+        boardEntity.setBoardPass(boardDTO.getBoardPass());
+        boardEntity.setBoardContents(boardDTO.getBoardContents());
+        boardEntity.setBoardTitle(boardDTO.getBoardTitle());
+        boardEntity.setBoardHits(boardDTO.getBoardHits());
+        boardEntity.setFileAttached(1);
         return boardEntity;
     }
 
