@@ -68,8 +68,17 @@ public class BoardController {
     }
 
     @GetMapping("/paging")
-    public String paging(@PageableDefault(page=1)Pageable pageable, Model model){
+    public String paging(@RequestParam(value = "keyword",required = false) String keyword,
+                         @PageableDefault(page=1)Pageable pageable, Model model){
         Page<BoardDTO> boardList = boardService.paging(pageable);
+
+
+        if (keyword != null && !keyword.isEmpty()) {
+            // 검색 결과 조회
+            List<BoardDTO> searchResult = boardService.findByBoardTitleContaining(keyword);
+            model.addAttribute("boardList", searchResult);
+        }
+
 
         int blockLimit = 3;
         int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; // 1 4 7 10 ~~
@@ -87,6 +96,7 @@ public class BoardController {
 
         return "paging";
     }
+
 
 
 }

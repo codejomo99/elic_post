@@ -1,5 +1,6 @@
 package com.elice.post.repository;
 
+import com.elice.post.dto.BoardDTO;
 import com.elice.post.entity.BoardEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -13,6 +14,7 @@ public interface BoardRepository extends JpaRepository<BoardEntity,Long> {
     @Modifying
     @Query(value = "update BoardEntity b set b.boardHits=b.boardHits+1 where b.id=:id")
     void updateHits(@Param("id") Long id);
+
 
 
     List<BoardEntity> findByBoardTitleContaining(String keyword);

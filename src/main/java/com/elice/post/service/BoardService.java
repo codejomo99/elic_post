@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -69,6 +70,15 @@ public class BoardService {
                 .map(BoardDTO::toBoardDTO)
                 .orElse(null);
     }
+    // 검색창
+    @Transactional
+    public List<BoardDTO> findByBoardTitleContaining(String keyword) {
+        // 다른 조건에 따른 검색을 위한 메서드를 정의합니다.
+        return boardRepository.findByBoardTitleContaining(keyword)
+                .stream()
+                .map(BoardDTO::toBoardDTO)
+                .collect(Collectors.toList());
+    }
 
     public BoardDTO update(BoardDTO boardDTO) {
         BoardEntity boardEntity = BoardEntity.toUpdateEntity(boardDTO);
@@ -100,5 +110,6 @@ public class BoardService {
 
 
     }
+
 
 }
