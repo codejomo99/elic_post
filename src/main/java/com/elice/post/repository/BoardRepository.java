@@ -2,6 +2,8 @@ package com.elice.post.repository;
 
 import com.elice.post.dto.BoardDTO;
 import com.elice.post.entity.BoardEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,5 +20,7 @@ public interface BoardRepository extends JpaRepository<BoardEntity,Long> {
 
 
     List<BoardEntity> findByBoardTitleContaining(String keyword);
+
+    Page<BoardEntity> findByBoardTitleContaining(String keyword, Pageable pageable);
 
 }

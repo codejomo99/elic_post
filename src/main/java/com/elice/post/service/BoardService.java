@@ -8,10 +8,7 @@ import com.elice.post.repository.BoardFileRepository;
 import com.elice.post.repository.BoardRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -78,6 +75,7 @@ public class BoardService {
                 .stream()
                 .map(BoardDTO::toBoardDTO)
                 .collect(Collectors.toList());
+
     }
 
     public BoardDTO update(BoardDTO boardDTO) {
@@ -110,6 +108,23 @@ public class BoardService {
 
 
     }
+
+    // 페이징 + 검색
+    @Transactional
+    public Page<BoardDTO> findByBoardTitleContainingAndPaging(String keyword, Pageable pageable) {
+        int page = pageable.getPageNumber() - 1;
+        int pageLimit = 5;
+
+        Page<BoardEntity> boardEntities = boardRepository.findByBoardTitleContaining(keyword, PageRequest.of(page, pageLimit,
+                Sort.by(Sort.Direction.DESC, "id")));
+
+        Page<BoardDTO> boardDTOS =  boardEntities.map(board -> new BoardDTO(board.getId(), board.getBoardPass(), board.getBoardWriter(),
+                board.getBoardTitle(), board.getBoardHits(), board.getCreatedTime()));
+
+        return boardDTOS;
+    }
+
+
 
 
 }

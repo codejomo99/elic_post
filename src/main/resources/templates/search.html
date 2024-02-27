@@ -174,12 +174,14 @@
     </div>
 </div>
 
+
+
 <div class="pagination-container">
     <!-- 첫 페이지로 이동 -->
-    <a th:href="@{/board/paging(page=1)}" class="pagination-link"><i class="fas fa-angle-double-left"></i></a>
+    <a th:href="@{'/search?keyword=' + ${keyword} + '&page=1'}" class="pagination-link"><i class="fas fa-angle-double-left"></i></a>
 
     <!-- 이전 페이지로 이동 -->
-    <a th:href="${boardList.first} ? '#' : @{/board/paging(page=${boardList.number})}" class="pagination-link"><i class="fas fa-angle-left"></i></a>
+    <a th:href="@{${boardList.number > 0}? '/search?keyword=' + ${keyword} + '&page=' + ${boardList.number} : '#'}" class="pagination-link"><i class="fas fa-angle-left"></i></a>
 
     <!-- 페이지 번호 링크 -->
     <span th:each="page: ${#numbers.sequence(startPage, endPage)}">
@@ -187,16 +189,17 @@
         <span th:if="${page == boardList.number + 1}" class="pagination-link current-page" th:text="${page}"></span>
         <!-- 다른 페이지 번호 -->
         <span th:unless="${page == boardList.number + 1}">
-            <a th:href="@{/board/paging(page=${page})}" class="pagination-link" th:text="${page}"></a>
+            <a th:href="@{'/search?keyword=' + ${keyword} + '&page=' + ${page}}" class="pagination-link" th:text="${page}"></a>
         </span>
     </span>
 
     <!-- 다음 페이지로 이동 -->
-    <a th:href="${boardList.last} ? '#' : @{/board/paging(page=${boardList.number + 2})}" class="pagination-link"><i class="fas fa-angle-right"></i></a>
+    <a th:href="@{${boardList.number < boardList.totalPages - 1}? '/search?keyword=' + ${keyword} + '&page=' + ${boardList.number + 2} : '#'}" class="pagination-link"><i class="fas fa-angle-right"></i></a>
 
     <!-- 마지막 페이지로 이동 -->
-    <a th:href="@{/board/paging(page=${boardList.totalPages})}" class="pagination-link"><i class="fas fa-angle-double-right"></i></a>
+    <a th:href="@{'/search?keyword=' + ${keyword} + '&page=' + ${boardList.totalPages}}" class="pagination-link"><i class="fas fa-angle-double-right"></i></a>
 </div>
+
 
 
 
