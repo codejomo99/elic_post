@@ -43,6 +43,7 @@ public class BoardService {
                 6. board_table에 해당 데이터 save 처리
                 7. board_file_table에 해당 데이터 save 처리
              */
+
             BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDTO);
             Long savedId = boardRepository.save(boardEntity).getId();
             BoardEntity board = boardRepository.findById(savedId).get();
@@ -66,16 +67,6 @@ public class BoardService {
         return boardRepository.findById(id)
                 .map(BoardDTO::toBoardDTO)
                 .orElse(null);
-    }
-    // 검색창
-    @Transactional
-    public List<BoardDTO> findByBoardTitleContaining(String keyword) {
-        // 다른 조건에 따른 검색을 위한 메서드를 정의합니다.
-        return boardRepository.findByBoardTitleContaining(keyword)
-                .stream()
-                .map(BoardDTO::toBoardDTO)
-                .collect(Collectors.toList());
-
     }
 
     public BoardDTO update(BoardDTO boardDTO) {
