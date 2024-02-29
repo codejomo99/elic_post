@@ -133,7 +133,7 @@
             <!-- 댓글 출력 부분-->
             <div class="container p-0 d-flex flex-column align-items-start gap-2" id="comment-list">
                 <!-- 댓글이 없는 경우 -->
-                <div class="form-control" th:if="${commentList.isEmpty()}">
+                <div class="form-control2" th:if="${commentList.isEmpty()}">
                     댓글이 없습니다.
                 </div>
 
@@ -244,8 +244,8 @@
                 // 댓글 개수 업데이트
                 $('#commentsCount').text(res.length);
 
-                // 댓글이 없습니다 메시지 감추기
-                $('.form-control').hide();
+                $('.form-control2').hide();
+
             },
             error: function (err) {
                 console.log("요청실패", err);
