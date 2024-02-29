@@ -121,7 +121,7 @@ public class BoardService {
     // 페이징
     public Page<BoardDTO> paging(Pageable pageable) {
         int page = pageable.getPageNumber() - 1;
-        int pageLimit = 8;
+        int pageLimit = 6;
         Page<BoardEntity> boardEntities = boardRepository.findAll(PageRequest.of(page, pageLimit,
                 Sort.by(Sort.Direction.DESC, "id")));
 
@@ -136,7 +136,7 @@ public class BoardService {
     @Transactional
     public Page<BoardDTO> findByBoardTitleContainingAndPaging(String keyword, Pageable pageable) {
         int page = pageable.getPageNumber() - 1;
-        int pageLimit = 8;
+        int pageLimit = 6;
 
         Page<BoardEntity> boardEntities = boardRepository.findByBoardTitleContaining(keyword, PageRequest.of(page, pageLimit,
                 Sort.by(Sort.Direction.DESC, "id")));
