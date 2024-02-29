@@ -218,6 +218,19 @@
                     <div class="card-body position-relative">
                         <p class="mb-2">${contents}</p>
                         <small class="text-secondary">${moment().format('YYYY-MM-DD HH:mm:ss')}</small>
+                        <div class="position-absolute end-0 top-50 translate-middle-y mb-3 me-3 btn-group bg-white bg-opacity-75"
+                             role="group" aria-label="edit-delete">
+                            <button class="btn btn-outline-primary lh-1" data-bs-toggle="modal"
+                                    data-bs-target="#editCommentModal"
+                                    th:onclick="handleEditCommentButton(event, ${res.id}, '${contents}');">
+                                <span class="material-symbols-outlined"> edit </span>
+                            </button>
+                            <button class="btn btn-outline-danger lh-1" data-bs-toggle="modal"
+                                    data-bs-target="#deleteCommentModal"
+                                    th:onclick="handleDeleteCommentButton(event, ${res.id});">
+                                <span class="material-symbols-outlined"> delete </span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -230,6 +243,9 @@
 
                 // 댓글 개수 업데이트
                 $('#commentsCount').text(res.length);
+
+                // 댓글이 없습니다 메시지 감추기
+                $('.form-control').hide();
             },
             error: function (err) {
                 console.log("요청실패", err);
