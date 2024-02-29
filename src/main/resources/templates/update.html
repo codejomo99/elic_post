@@ -1,20 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>update</title>-->
-<!--</head>-->
-<!--<body>-->
-<!--<form action="/board/update" method="post" name="updateForm">-->
-
-<!--    writer: <input type="text" name="boardWriter" th:value="${boardUpdate.boardWriter}" readonly> <br>-->
-<!--    pass: <input type="text" name="boardPass" id="boardPass"> <br>-->
-<!--    title: <input type="text" name="boardTitle" th:value="${boardUpdate.boardTitle}"> <br>-->
-<!--    contents: <textarea name="boardContents" cols="30" rows="10" th:text="${boardUpdate.boardContents}"></textarea> <br>-->
-<!--    <input type="hidden" name="boardHits" th:value="${boardUpdate.boardHits}">-->
-<!--    <input type="button" value="글수정" onclick="boardUpdate()">-->
-<!--</form>-->
-<!--</body>-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -68,6 +51,7 @@
             <input
                     type="password"
                     class="form-control"
+                    id="actualPassword"
                     name="boardPass"
                     maxlength="30"
                     placeholder=""
@@ -108,7 +92,7 @@
             ></textarea>
         </div>
         <input type="hidden" name="boardHits" th:value="${boardUpdate.boardHits}">
-        <button type="submit" class="btn btn-success" onclick="boardUpdate()">수정</button>
+        <button type="button" class="btn btn-success" onclick="boardUpdate()">수정</button> <!-- type 변경 -->
         <button
                 type="button"
                 class="btn btn-secondary"
@@ -130,9 +114,9 @@
 </html>
 <script th:inline="javascript">
     const boardUpdate = () => {
-        const pass = [[${boardUpdate.boardPass}]];
-        const inputPass = document.getElementById("boardPass").value;
-        if (pass == inputPass) {
+        const inputPass = document.getElementById("actualPassword").value; // ID 수정
+        const correctPass = /*[[${boardUpdate.boardPass}]]*/ ''; // Thymeleaf 변수를 가져오는 것을 주석 처리
+        if (correctPass === inputPass) {
             document.updateForm.submit();
         } else {
             alert("비밀번호가 일치하지 않습니다!");
@@ -141,7 +125,8 @@
 
     function maskPassword(input) {
         var hiddenPasswordField = document.getElementById('actualPassword');
-        hiddenPasswordField.value = input.value;
+        if(hiddenPasswordField !== null) { // 요소가 존재하는지 확인
+            hiddenPasswordField.value = input.value;
+        }
     }
-
 </script>
