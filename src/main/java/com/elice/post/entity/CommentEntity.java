@@ -9,7 +9,7 @@ import lombok.Setter;
 @Entity
 @Setter
 @Getter
-@Table(name="comment_tables")
+@Table(name="comment_table2")
 public class CommentEntity extends BaseEntity{
 
     @Id

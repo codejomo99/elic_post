@@ -158,10 +158,11 @@
                 <td><span th:text="${#temporals.format(board.boardCreatedTime, 'yyyy-MM-dd HH:mm:ss')}"></span></td>
                 <td th:text="${board.boardHits}"></td>
                 <td>
-                    <button class="btn btn-outline-primary" th:onclick="'updateReq(\'' + ${board.id} + '\');'">수정
-                    </button>
                     <button class="btn btn-outline-success" th:onclick="'detailReq(\'' + ${board.id} + '\');'">보기
                     </button>
+                    <button class="btn btn-outline-primary" th:onclick="'updateReq(\'' + ${board.id} + '\');'">수정
+                    </button>
+
                     <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
                             th:attr="onclick='setBoardIdAndPassword(\'' + ${board.id} + '\', \'' + ${board.boardPass} + '\')'">
                         삭제
