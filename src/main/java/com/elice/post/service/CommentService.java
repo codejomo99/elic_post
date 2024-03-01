@@ -27,7 +27,6 @@ public class CommentService {
         if (optionalBoardEntity.isPresent()) {
             BoardEntity boardEntity = optionalBoardEntity.get();
             CommentEntity commentEntity = new CommentEntity(commentDTO, boardEntity);
-//            CommentEntity commentEntity = CommentEntity.toSaveEntity(commentDTO, boardEntity);
             return commentRepository.save(commentEntity).getId();
         } else {
             return null;
@@ -50,14 +49,18 @@ public class CommentService {
 
 
 
-    public void delete(Long id){
+    public void delete(Long id) {
         commentRepository.deleteById(id);
     }
 
-
-    public void update(CommentDTO commentDTO, BoardDTO boardDTO){
-
-
+    public void update(Long id, CommentDTO commentDTO) {
+        Optional<CommentEntity> optionalCommentEntity = commentRepository.findById(id);
+        if (optionalCommentEntity.isPresent()) {
+            CommentEntity commentEntity = optionalCommentEntity.get();
+            commentEntity.setCommentWriter(commentDTO.getCommentWriter());
+            commentEntity.setCommentContents(commentDTO.getCommentContents());
+            commentRepository.save(commentEntity);
+        }
     }
 
 
