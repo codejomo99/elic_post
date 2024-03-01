@@ -1,6 +1,7 @@
 package com.elice.post.service;
 
 
+import com.elice.post.dto.BoardDTO;
 import com.elice.post.dto.CommentDTO;
 import com.elice.post.entity.BoardEntity;
 import com.elice.post.entity.CommentEntity;
@@ -20,18 +21,18 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
 
-    public Long save(CommentDTO commentDTO){
+    public Long save(CommentDTO commentDTO) {
         Optional<BoardEntity> optionalBoardEntity = boardRepository.findById(commentDTO.getBoardId());
 
-        if(optionalBoardEntity.isPresent()){
+        if (optionalBoardEntity.isPresent()) {
             BoardEntity boardEntity = optionalBoardEntity.get();
-            CommentEntity commentEntity = CommentEntity.toSaveEntity(commentDTO, boardEntity);
+            CommentEntity commentEntity = new CommentEntity(commentDTO, boardEntity);
             return commentRepository.save(commentEntity).getId();
-        }else{
-        return null;
+        } else {
+            return null;
         }
-
     }
+
 
     public List<CommentDTO> findAll(Long boardId){
         BoardEntity boardEntity = boardRepository.findById(boardId).get();
@@ -48,14 +49,18 @@ public class CommentService {
 
 
 
-    public void delete(Long id){
+    public void delete(Long id) {
         commentRepository.deleteById(id);
     }
 
-    public void update(CommentDTO commentDTO){
-        CommentEntity commentEntity =  CommentEntity.toUpdateEntity(commentDTO);
-        commentRepository.save(commentEntity);
-
+    public void update(Long id, CommentDTO commentDTO) {
+        Optional<CommentEntity> optionalCommentEntity = commentRepository.findById(id);
+        if (optionalCommentEntity.isPresent()) {
+            CommentEntity commentEntity = optionalCommentEntity.get();
+            commentEntity.setCommentWriter(commentDTO.getCommentWriter());
+            commentEntity.setCommentContents(commentDTO.getCommentContents());
+            commentRepository.save(commentEntity);
+        }
     }
 
 

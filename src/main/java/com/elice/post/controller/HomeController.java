@@ -4,12 +4,18 @@ import com.elice.post.dto.BoardDTO;
 import com.elice.post.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping
@@ -19,12 +25,12 @@ public class HomeController {
     private final BoardService boardService;
 
     @GetMapping("/")
-    public String paging(@PageableDefault(page = 1) Pageable pageable, Model model){
-//        pageable.getPageNumber();
+    public String paging(@PageableDefault(page = 1) Pageable pageable, Model model) {
+//
         Page<BoardDTO> boardList = boardService.paging(pageable);
 
         int blockLimit = 3;
-        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; // 1 4 7 10 ~~
+        int startPage = (((int) (Math.ceil((double) pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; // 1 4 7 10 ~~
         int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
         // page 갯수 20개
         // 현재 사용자가 3페이지
@@ -39,5 +45,31 @@ public class HomeController {
 
         return "paging";
     }
+
+
+    @GetMapping("/search")
+    public String search(@RequestParam("keyword") String keyword, @PageableDefault(page = 1) Pageable pageable, Model model) {
+
+//        List<BoardDTO> searchResult = boardService.findByBoardTitleContaining(keyword);
+//        Page<BoardDTO> pageList = boardService.paging(pageable);
+//
+//        Page<BoardDTO> boardList = new PageImpl<>(searchResult, pageable, searchResult.size());
+//        model.addAttribute("boardList", boardList);
+//        model.addAttribute("keyword", keyword);
+//
+        Page<BoardDTO> boardList = boardService.findByBoardTitleContainingAndPaging(keyword, pageable);
+        model.addAttribute("boardList", boardList);
+        model.addAttribute("keyword", keyword);
+
+        int blockLimit = 3;
+        int startPage = (((int) (Math.ceil((double) pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; // 1 4 7 10 ~~
+        int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
+        return "search";
+
+    }
+
 
 }

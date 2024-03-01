@@ -21,21 +21,29 @@
     />
 
     <style>
+        .image-preview {
+            max-width: 55%;
+            max-height: 55%;
+        }
 
         .comment-list-container td {
             /* 단어 단위로 줄바꿈 */
             word-wrap: break-word;
         }
+
         #commentWriter {
             width: 15%; /* 입력 필드의 가로 길이를 50%로 지정 */
         }
-        #commentContents{
+
+        #commentContents {
             width: 30%;
         }
-        label{
+
+        label {
             padding-top: 5px;
             padding-bottom: 5px;
         }
+
         html,
         body {
             font-family: "Elice DX Neolli", sans-serif;
@@ -66,7 +74,7 @@
 </head>
 <body>
 <div class="container my-5 mx-auto">
-    <button class="btn btn-primary" onclick="listReq()"
+    <button class="btn btn-success" onclick="listReq()"
     >&larr; 게시판으로 돌아가기
     </button
     >
@@ -92,17 +100,22 @@
         <hr class="mt-4"/>
 
         <div class="mb-3">
-            <strong><label for="content" style="
-    padding-bottom: 10px;padding-left: 12px;">게시글 내용</label></strong>
-            <textarea
-                    class="form-control"
-                    id="content"
-                    name="boardContents"
-                    th:text="${board.boardContents}"
-                    cols="30" rows="10"
-                    readonly
-            ></textarea>
+            <label for="content" class="form-label"><strong>게시글 내용</strong></label><br>
+
+            <!-- 파일 첨부된 경우 이미지 표시 -->
+            <table th:if="${board.fileAttached == 1}">
+                <tr>
+                    <td th:each="fileName: ${board.storedFileName}">
+                        <img th:src="@{|/upload/${fileName}|}" alt="" class="image-preview">
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <!-- 게시글 내용 텍스트 영역 -->
+            <textarea class="form-control" id="content" name="boardContents" cols="30" rows="10" readonly
+                      th:text="${board.boardContents}"></textarea>
         </div>
+
         <hr class="mt-4"/>
         <h4 class="mb-3">
             댓글
@@ -116,40 +129,58 @@
 
         <div id="comment-write" class="comment-form-container">
 
-            <div class="form-group">
-                <label for="commentWriter"> 작성자</label>
-                <input type="text" id="commentWriter" class="form-control" placeholder="(최대10글자)" maxlength="10">
-            </div>
-            <div class="form-group">
-                <label for="commentContents"> 내용</label>
-                <textarea id="commentContents" class="form-control" placeholder="내용"></textarea>
-            </div>
-            <button id="comment-writer-btn" class="btn btn-primary" onclick="commentWrite()" style="margin-top: 15px">입력</button>
-        </div>
-        <!-- 댓글 출력 부분-->
 
-        <div id="comment-list" class="comment-list-container">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">작성자</th>
-                    <th scope="col">내용</th>
-                    <th scope="col">작성시간</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="comment: ${commentList}">
-                    <td th:text="${comment.commentWriter}"></td>
-                    <td th:text="${comment.commentContents}"></td>
-                    <td th:text="${#temporals.format(comment.commentCreatedTime, 'yyyy-MM-dd')}"></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+            <!-- 댓글 출력 부분-->
+            <div class="container p-0 d-flex flex-column align-items-start gap-2" id="comment-list">
+                <!-- 댓글이 없는 경우 -->
+                <div class="form-control2" th:if="${commentList.isEmpty()}">
+                    댓글이 없습니다.
+                </div>
 
+                <!-- 댓글이 있는 경우 -->
+                <div class="card comment" style="min-width: 30%" th:each="comment : ${commentList}">
+                    <div class="card-body position-relative">
+                        <p class="mb-2" th:text="${comment.commentContents}">댓글 내용</p>
+                        <small class="text-secondary" th:text="${comment.commentWriter}">작성자</small>
+                        <small class="text-secondary"
+                               th:text="${#temporals.format(comment.commentCreatedTime, 'yyyy-MM-dd HH:mm')}">2024-01-04T13:21:21</small>
+
+
+                        <div class="position-absolute end-0 top-50 translate-middle-y mb-3 me-3 btn-group bg-white bg-opacity-75"
+                             role="group" aria-label="edit-delete">
+                            <button class="btn btn-outline-primary lh-1" data-bs-toggle="modal"
+                                    data-bs-target="#editCommentModal"
+                                    th:onclick="handleEditCommentButton(event, ${comment.id}, ${comment.commentContents});">
+                                <span class="material-symbols-outlined"> edit </span>
+                            </button>
+                            <button class="btn btn-outline-danger lh-1" data-bs-toggle="modal"
+                                    data-bs-target="#deleteCommentModal"
+                                    th:onclick="handleDeleteCommentButton(event, ${comment.id});">
+                                <span class="material-symbols-outlined"> delete </span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <hr class="mt-4"/>
+        <div class="form-group">
+            <label for="commentWriter"> 작성자</label>
+            <input type="text" id="commentWriter" class="form-control" placeholder="(최대10글자)" maxlength="10">
+        </div>
+        <div class="form-group">
+            <label for="commentContents"> 내용</label>
+            <textarea id="commentContents" class="form-control" placeholder="내용"></textarea>
+        </div>
+        <button id="comment-writer-btn" class="btn btn-success" onclick="commentWrite()" style="margin-top: 15px">
+            입력
+        </button>
     </div>
-</div>
 
+
+</div>
+</div>
 
 
 <!-- 부트스트랩 JS 추가 -->
@@ -163,8 +194,6 @@
     const commentWrite = () => {
         const writer = document.getElementById("commentWriter").value;
         const contents = document.getElementById("commentContents").value;
-        console.log("작성자: ", writer);
-        console.log("내용: ", contents);
 
         // 댓글 내용이 비어 있는지 확인
         if (!contents.trim()) {
@@ -183,31 +212,45 @@
                 "boardId": id
             },
             success: function (res) {
-                console.log("요청성공", res);
-                let output = "<table class='table'>"; // 테이블 클래스 추가
-                output += "<thead><tr><th scope='col'>작성자</th><th scope='col'>내용</th><th scope='col'>작성시간</th></tr></thead>";
-                output += "<tbody>";
-                for (let i in res) {
-                    output += "<tr>";
-                    output += "<td>" + res[i].commentWriter + "</td>";
-                    output += "<td>" + res[i].commentContents + "</td>";
-                    output += "<td>" + moment(res[i].commentCreatedTime).format('YYYY-MM-DD') + "</td>";
-                    output += "</tr>";
-                }
-                output += "</tbody>";
-                output += "</table>";
-                $('#comment-list').html(output);
+                // 새로운 댓글을 생성
+                const newComment = `
+                <div class="card comment" style="min-width: 30%">
+                    <div class="card-body position-relative">
+                        <p class="mb-2">${contents}</p>
+                        <small class="text-secondary">${moment().format('YYYY-MM-DD HH:mm:ss')}</small>
+                        <div class="position-absolute end-0 top-50 translate-middle-y mb-3 me-3 btn-group bg-white bg-opacity-75"
+                             role="group" aria-label="edit-delete">
+                            <button class="btn btn-outline-primary lh-1" data-bs-toggle="modal"
+                                    data-bs-target="#editCommentModal"
+                                    th:onclick="handleEditCommentButton(event, ${res.id}, '${contents}');">
+                                <span class="material-symbols-outlined"> edit </span>
+                            </button>
+                            <button class="btn btn-outline-danger lh-1" data-bs-toggle="modal"
+                                    data-bs-target="#deleteCommentModal"
+                                    th:onclick="handleDeleteCommentButton(event, ${res.id});">
+                                <span class="material-symbols-outlined"> delete </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+                // 생성된 댓글을 댓글 목록에 추가
+                $('#comment-list').prepend(newComment);
+
+                // 입력 필드 초기화
                 $('#commentWriter').val('');
                 $('#commentContents').val('');
+
+                // 댓글 개수 업데이트
                 $('#commentsCount').text(res.length);
+
+                $('.form-control2').hide();
+
             },
             error: function (err) {
                 console.log("요청실패", err);
             }
         });
-
-
-
     }
 
 
